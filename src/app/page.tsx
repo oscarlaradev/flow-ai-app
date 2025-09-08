@@ -118,8 +118,7 @@ URL.revokeObjectURL(href);
             if (!ctx) {
                 throw new Error("No se pudo obtener el contexto del canvas.");
             }
-
-            // Dibuja un fondo blanco en el canvas
+            
             ctx.fillStyle = 'white';
             ctx.fillRect(0, 0, width, height);
 

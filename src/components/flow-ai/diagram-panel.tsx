@@ -39,8 +39,8 @@ const DiagramPanel = ({ svgContent, isLoading, error }: DiagramPanelProps) => {
   const startPoint = useRef({ x: 0, y: 0 });
 
   const handleMouseDown = (e: MouseEvent<HTMLDivElement>) => {
-    // Solo iniciar paneo con el clic principal y sobre el fondo
-    if (e.button !== 0 || !(e.currentTarget === e.target)) return;
+    // Solo iniciar paneo con el clic principal y sobre el fondo del div
+    if (e.button !== 0 || e.target !== e.currentTarget) return;
     
     e.preventDefault();
     e.stopPropagation();
