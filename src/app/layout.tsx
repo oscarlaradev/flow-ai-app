@@ -25,12 +25,18 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="es" className="dark" suppressHydrationWarning>
+    <html
+      lang="es"
+      className={cn(
+        'dark',
+        fontInter.variable,
+        fontSourceCodePro.variable
+      )}
+      suppressHydrationWarning
+    >
       <body
         className={cn(
-          'font-sans antialiased',
-          fontInter.variable,
-          fontSourceCodePro.variable
+          'font-sans antialiased'
         )}
       >
         {children}
