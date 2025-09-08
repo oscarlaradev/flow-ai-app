@@ -1,11 +1,13 @@
 'use server';
 
 /**
- * @fileOverview Un agente de IA para la generación de diagramas de flujo.
+ * @fileOverview Un agente de IA que convierte descripciones de texto de diagramas de flujo en una estructura de datos JSON.
  *
- * - textToFlowchart - Una función que genera un diagrama de flujo a partir de una descripción de texto.
+ * - textToFlowchart - Una función que convierte la descripción textual de un diagrama de flujo en una estructura JSON.
  * - TextToFlowchartInput - El tipo de entrada para la función textToFlowchart.
- * - TextToFlowchartOutput - El tipo de retorno para la función textToFlowchart.
+ * - FlowchartNode - Representa un nodo en el diagrama de flujo.
+ * - FlowchartEdge - Representa una conexión (arista) entre nodos.
+ * - TextToFlowchartOutput - El tipo de retorno, que contiene un array de nodos y aristas.
  */
 
 import {ai} from '@/ai/genkit';
@@ -18,14 +20,36 @@ const TextToFlowchartInputSchema = z.object({
 });
 export type TextToFlowchartInput = z.infer<typeof TextToFlowchartInputSchema>;
 
-const TextToFlowchartOutputSchema = z.object({
-  flowchartDiagram: z
-    .string()
-    .describe('El diagrama de flujo generado en formato SVG.'),
+export const FlowchartNodeSchema = z.object({
+  id: z.string().describe('Identificador único para el nodo.'),
+  label: z.string().describe('El texto que se mostrará dentro del nodo.'),
+  type: z
+    .enum(['process', 'decision', 'start/end'])
+    .describe('El tipo de nodo.'),
 });
+
+export const FlowchartEdgeSchema = z.object({
+  from: z.string().describe('El ID del nodo de origen.'),
+  to: z.string().describe('El ID del nodo de destino.'),
+  label: z.string().optional().describe('Etiqueta opcional para la conexión.'),
+});
+
+const TextToFlowchartOutputSchema = z.object({
+  nodes: z
+    .array(FlowchartNodeSchema)
+    .describe('Una lista de todos los nodos en el diagrama.'),
+  edges: z
+    .array(FlowchartEdgeSchema)
+    .describe('Una lista de todas las conexiones (aristas) entre nodos.'),
+});
+
+export type FlowchartNode = z.infer<typeof FlowchartNodeSchema>;
+export type FlowchartEdge = z.infer<typeof FlowchartEdgeSchema>;
 export type TextToFlowchartOutput = z.infer<typeof TextToFlowchartOutputSchema>;
 
-export async function textToFlowchart(input: TextToFlowchartInput): Promise<TextToFlowchartOutput> {
+export async function textToFlowchart(
+  input: TextToFlowchartInput
+): Promise<TextToFlowchartOutput> {
   return textToFlowchartFlow(input);
 }
 
@@ -33,37 +57,51 @@ const prompt = ai.definePrompt({
   name: 'textToFlowchartPrompt',
   input: {schema: TextToFlowchartInputSchema},
   output: {schema: TextToFlowchartOutputSchema},
-  prompt: `Eres un experto en generar diagramas de flujo en formato SVG a partir de una sintaxis de texto específica. Tu tarea es convertir la descripción proporcionada en un diagrama SVG limpio, válido y visualmente atractivo.
+  prompt: `Eres un experto en interpretar descripciones textuales de diagramas de flujo y convertirlas en una estructura de datos JSON. Tu tarea es analizar el texto proporcionado y generar una lista de nodos y conexiones (aristas) que representen el diagrama.
 
 Descripción de Texto a convertir:
+\`\`\`
 {{{textDescription}}}
+\`\`\`
 
-INSTRUCCIONES PARA LA GENERACIÓN DEL SVG:
-1.  **Salida Exclusiva**: Tu única salida debe ser el código SVG. No incluyas comentarios de Markdown, explicaciones, ni ningún texto fuera de la etiqueta <svg>.
-2.  **Estilos CSS**: Utiliza los siguientes estilos. Los colores se basan en variables CSS para que el diagrama se adapte a temas claro/oscuro.
-    *   **SVG Global**: \`font-family: sans-serif;\`
-    *   **Nodos (rect, ellipse, path para diamante)**: \`fill: hsl(var(--secondary)); stroke: hsl(var(--primary)); stroke-width: 2px;\`
-    *   **Texto dentro de Nodos**: \`fill: hsl(var(--secondary-foreground)); font-size: 14px; text-anchor: middle; dominant-baseline: central;\`
-    *   **Líneas de Conexión**: \`stroke: hsl(var(--accent-foreground)); stroke-width: 2px; marker-end: url(#arrowhead);\`
-    *   **Punta de Flecha**: \`fill: hsl(var(--accent-foreground));\`
-    *   **Etiquetas de Conexión**: \`fill: hsl(var(--muted-foreground)); font-size: 12px; text-anchor: middle;\`
+INSTRUCCIONES PARA LA GENERACIÓN DEL JSON:
+1.  **Identificadores de Nodos**: Asigna un ID único a cada nodo (por ejemplo, "nodo-1", "nodo-2"). Sé consistente al referenciar estos IDs en las aristas.
+2.  **Tipos de Nodos**:
+    *   Usa el tipo \`start/end\` para la sintaxis \`((Texto))\`.
+    *   Usa el tipo \`process\` para la sintaxis \`(Texto)\`.
+    *   Usa el tipo \`decision\` para la sintaxis \`<¿Pregunta?>\`.
+3.  **Etiquetas de Nodos**: El texto dentro de los paréntesis o corchetes debe ser el campo \`label\` del nodo.
+4.  **Aristas (Conexiones)**:
+    *   Cada \`->\` representa una arista. El campo \`from\` debe ser el ID del nodo anterior y \`to\` el ID del nodo siguiente.
+    *   Para conexiones con etiquetas como \`-[Etiqueta]->\`, usa el campo opcional \`label\` en la arista.
+5.  **Ignorar Comentarios**: Ignora cualquier línea que comience con \`//\`.
 
-3.  **Elementos del Diagrama y Diseño**:
-    *   **Nodos**: Usa \`<rect>\` para procesos (con esquinas redondeadas, \`rx="8"\`), \`<ellipse>\` para inicio/fin, y \`<path>\` con forma de diamante para decisiones.
-    *   **Texto**: El texto dentro de los nodos debe estar centrado. Si es muy largo, divídelo en varias líneas usando \`<tspan>\` con un espaciado adecuado (\`dy="1.2em"\`).
-    *   **Conectores**: Dibuja flechas con \`<path>\`. Asegúrate de que apunten correctamente a los bordes de los nodos.
-    *   **Diseño**: Calcula un diseño lógico y espaciado. Los nodos no deben solaparse. Define un \`viewBox\` en la etiqueta \`<svg>\` que encaje todo el diagrama con un margen de al menos 20px.
+**Ejemplo de Conversión**:
+Si el texto es:
+\`\`\`
+((Inicio)) -> <¿Funciona?>
+<¿Funciona?> -[Sí]-> (Continuar)
+<¿Funciona?> -[No]-> ((Fin))
+\`\`\`
 
-4.  **Definición de la Punta de Flecha**: Incluye esta definición estándar dentro de una sección \`<defs>\` en tu SVG:
-    \`\`\`xml
-    <defs>
-      <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="8" refY="3.5" orient="auto" markerUnits="strokeWidth">
-        <polygon points="0 0, 10 3.5, 0 7" />
-      </marker>
-    </defs>
-    \`\`\`
+La salida JSON esperada sería:
+\`\`\`json
+{
+  "nodes": [
+    { "id": "nodo-1", "label": "Inicio", "type": "start/end" },
+    { "id": "nodo-2", "label": "¿Funciona?", "type": "decision" },
+    { "id": "nodo-3", "label": "Continuar", "type": "process" },
+    { "id": "nodo-4", "label": "Fin", "type": "start/end" }
+  ],
+  "edges": [
+    { "from": "nodo-1", "to": "nodo-2" },
+    { "from": "nodo-2", "to": "nodo-3", "label": "Sí" },
+    { "from": "nodo-2", "to": "nodo-4", "label": "No" }
+  ]
+}
+\`\`\`
 
-Tu objetivo es producir un SVG impecable y funcional basado en el texto del usuario. Analiza la estructura del texto y genera el diagrama correspondiente.`,
+Analiza la descripción del usuario y genera la estructura JSON correspondiente. Asegúrate de que todos los nodos estén conectados correctamente según la descripción.`,
 });
 
 const textToFlowchartFlow = ai.defineFlow(

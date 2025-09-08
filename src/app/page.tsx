@@ -1,20 +1,34 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import type { FC } from "react";
 import { useToast } from "@/hooks/use-toast";
-import { textToFlowchart } from "@/ai/flows/text-to-flowchart";
+import { textToFlowchart, type TextToFlowchartOutput } from "@/ai/flows/text-to-flowchart";
 import Header from "@/components/flow-ai/header";
 import EditorPanel from "@/components/flow-ai/editor-panel";
 import DiagramPanel from "@/components/flow-ai/diagram-panel";
 import { EXAMPLE_FLOW } from "@/lib/constants";
+import { generateSvgFromFlowData } from "@/lib/flow-renderer";
+
 
 const Home: FC = () => {
   const [text, setText] = useState<string>("");
-  const [svgContent, setSvgContent] = useState<string>("");
+  const [flowData, setFlowData] = useState<TextToFlowchartOutput | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>("");
   const { toast } = useToast();
+  
+  const svgContent = useMemo(() => {
+    if (!flowData) return "";
+    try {
+      return generateSvgFromFlowData(flowData);
+    } catch (e) {
+      const errorMessage = e instanceof Error ? e.message : String(e);
+      setError(`Error al renderizar el SVG: ${errorMessage}`);
+      return "";
+    }
+  }, [flowData]);
+
 
   useEffect(() => {
     setText(EXAMPLE_FLOW.content);
@@ -31,14 +45,14 @@ const Home: FC = () => {
     }
     setIsLoading(true);
     setError("");
-    setSvgContent("");
+    setFlowData(null);
 
     try {
       const result = await textToFlowchart({ textDescription: text });
-      if (result.flowchartDiagram) {
-        setSvgContent(result.flowchartDiagram);
+      if (result && result.nodes && result.edges) {
+        setFlowData(result);
       } else {
-        throw new Error("La IA no devolvió un diagrama de flujo válido.");
+        throw new Error("La IA no devolvió una estructura de diagrama válida.");
       }
     } catch (e: unknown) {
       const errorMessage = e instanceof Error ? e.message : String(e);
@@ -55,6 +69,7 @@ const Home: FC = () => {
 
   const handleExampleChange = () => {
     setText(EXAMPLE_FLOW.content);
+    setFlowData(null);
   };
 
   return (
