@@ -31,25 +31,21 @@ const prompt = ai.definePrompt({
   name: 'textToFlowchartPrompt',
   input: {schema: TextToFlowchartInputSchema},
   output: {schema: TextToFlowchartOutputSchema},
-  prompt: `Eres un experto en interpretar descripciones de diagramas de flujo en lenguaje natural y convertirlas a una estructura JSON de nodos y aristas.
+  prompt: `Eres un experto en convertir descripciones en lenguaje natural a diagramas de flujo en formato JSON.
 
-INSTRUCCIONES:
-1.  **Analiza la Descripción**: Lee la descripción en lenguaje natural proporcionada por el usuario.
-2.  **Identifica Nodos**: Extrae cada paso, acción, decisión, inicio o fin como un nodo.
-3.  **Asigna Tipos de Nodo**:
-    *   Usa 'start/end' para los puntos de inicio y fin del proceso.
-    *   Usa 'process' para acciones o pasos (ej: "hacer algo", "limpiar material").
-    *   Usa 'decision' para preguntas que dividen el flujo (ej: "¿funciona?", "¿está completo?").
-4.  **Genera IDs Únicos**: Asigna un ID único y secuencial a cada nodo (ej: "nodo-1", "nodo-2").
-5.  **Crea Aristas (Conexiones)**: Conecta los nodos basándote en la secuencia del flujo.
-    *   Si una decisión tiene diferentes caminos (ej: "Si sí, ...", "Si no, ..."), asegúrate de que las aristas salgan del nodo de decisión y tengan la etiqueta correspondiente ("Sí", "No", etc.).
-    *   Si varios caminos convergen en un solo punto, dirige las aristas al mismo nodo de destino.
-6.  **Maneja Flujos Complejos**: Presta especial atención a las bifurcaciones y uniones para que el diagrama de flujo sea lógicamente correcto.
+REGLAS:
+-   **Nodos**: Identifica cada paso, decisión, inicio o fin como un nodo.
+-   **Tipos de Nodo**:
+    -   'start/end': Para el comienzo y el final.
+    -   'process': Para acciones o tareas.
+    -   'decision': Para preguntas que dividen el flujo.
+-   **IDs**: Asigna IDs únicos y secuenciales (ej: "nodo-1", "nodo-2").
+-   **Aristas**: Conecta los nodos en el orden del flujo.
+    -   Las decisiones deben tener aristas con etiquetas (ej: "Sí", "No").
 
 EJEMPLO:
--   **Descripción de entrada**: "El proceso comienza, luego se verifica si el sistema está activo. Si lo está, se ejecuta la tarea A. Si no, se reporta un error y el proceso termina. Después de la tarea A, el proceso también termina."
+-   **Entrada**: "El proceso comienza. Se verifica si el sistema está activo. Si sí, se ejecuta la tarea A. Si no, se reporta un error y el proceso termina. Después de la tarea A, el proceso también termina."
 -   **Salida JSON esperada**:
-    \`\`\`json
     {
       "nodes": [
         { "id": "nodo-1", "label": "Inicio", "type": "start/end" },
@@ -66,14 +62,11 @@ EJEMPLO:
         { "from": "nodo-3", "to": "nodo-5" }
       ]
     }
-    \`\`\`
 
-Ahora, analiza la siguiente descripción del usuario y genera la estructura JSON correspondiente.
+Analiza la siguiente descripción y genera el JSON correspondiente.
 
 Descripción del Usuario:
-\`\`\`
 {{{textDescription}}}
-\`\`\`
 `,
 });
 
