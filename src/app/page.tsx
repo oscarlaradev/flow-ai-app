@@ -10,6 +10,7 @@ import DiagramPanel from "@/components/flow-ai/diagram-panel";
 import { EXAMPLE_FLOW } from "@/lib/constants";
 import { generateSvgFromFlowData } from "@/lib/flow-renderer";
 import { Canvg } from 'canvg';
+import ClientOnly from "@/components/client-only";
 
 
 const Home: FC = () => {
@@ -147,23 +148,25 @@ URL.revokeObjectURL(href);
   };
 
   return (
-    <div className="flex min-h-screen w-full flex-col bg-background p-4 overflow-auto">
-      <Header
-        onGenerate={handleGenerate}
-        onExampleChange={handleExampleChange}
-        onExport={handleExport}
-        isLoading={isLoading}
-      />
-      <main className="flex min-h-0 flex-1 flex-col gap-4 lg:flex-row">
-        <EditorPanel text={text} onTextChange={setText} />
-        <DiagramPanel
-          svgContent={svgContent}
+    <ClientOnly>
+      <div className="flex min-h-screen w-full flex-col bg-background p-4 overflow-auto">
+        <Header
+          onGenerate={handleGenerate}
+          onExampleChange={handleExampleChange}
+          onExport={handleExport}
           isLoading={isLoading}
-          error={error}
-          key={svgContent} 
         />
-      </main>
-    </div>
+        <main className="flex min-h-0 flex-1 flex-col gap-4 lg:flex-row">
+          <EditorPanel text={text} onTextChange={setText} />
+          <DiagramPanel
+            svgContent={svgContent}
+            isLoading={isLoading}
+            error={error}
+            key={svgContent} 
+          />
+        </main>
+      </div>
+    </ClientOnly>
   );
 };
 

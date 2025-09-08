@@ -39,19 +39,27 @@ const DiagramPanel = ({ svgContent, isLoading, error }: DiagramPanelProps) => {
   const startPoint = useRef({ x: 0, y: 0 });
 
   const handleMouseDown = (e: MouseEvent<HTMLDivElement>) => {
-    if (e.button !== 0 || !(e.target as HTMLElement).closest('.diagram-bg')) return;
+    // Solo iniciar paneo con el clic principal y sobre el fondo
+    if (e.button !== 0 || !(e.currentTarget === e.target)) return;
+    
+    e.preventDefault();
+    e.stopPropagation();
+
     isPanning.current = true;
     startPoint.current = { x: e.clientX - pan.x, y: e.clientY - pan.y };
     if (containerRef.current) containerRef.current.style.cursor = "grabbing";
   };
 
-  const handleMouseUp = () => {
+  const handleMouseUpAndLeave = (e: MouseEvent<HTMLDivElement>) => {
+    if (!isPanning.current) return;
+    e.preventDefault();
     isPanning.current = false;
     if (containerRef.current) containerRef.current.style.cursor = "grab";
   };
 
   const handleMouseMove = (e: MouseEvent<HTMLDivElement>) => {
     if (!isPanning.current) return;
+    e.preventDefault();
     setPan({
       x: e.clientX - startPoint.current.x,
       y: e.clientY - startPoint.current.y,
@@ -131,10 +139,10 @@ const DiagramPanel = ({ svgContent, isLoading, error }: DiagramPanelProps) => {
           onWheel={handleWheel}
         >
           <BackgroundGrid />
-          <div className="diagram-bg absolute inset-0 h-full w-full cursor-grab"
+          <div className="absolute inset-0 h-full w-full cursor-grab"
             onMouseDown={handleMouseDown}
-            onMouseUp={handleMouseUp}
-            onMouseLeave={handleMouseUp}
+            onMouseUp={handleMouseUpAndLeave}
+            onMouseLeave={handleMouseUpAndLeave}
             onMouseMove={handleMouseMove}
           />
           <div className="relative z-10 h-full w-full pointer-events-none flex items-center justify-center">{renderContent()}</div>
