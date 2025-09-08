@@ -27,11 +27,7 @@ export default function RootLayout({
   return (
     <html
       lang="es"
-      className={cn(
-        'dark',
-        fontInter.variable,
-        fontSourceCodePro.variable
-      )}
+      className={`${fontInter.variable} ${fontSourceCodePro.variable} dark`}
       suppressHydrationWarning
     >
       <body className="font-sans antialiased">
