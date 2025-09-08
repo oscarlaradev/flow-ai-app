@@ -1,63 +1,63 @@
 export const EXAMPLE_FLOWS = [
   {
     id: "purchase-flow",
-    name: "Purchase Flow",
-    content: `// Online Purchase Process
-START: Customer visits website
+    name: "Flujo de Compra",
+    content: `// Proceso de Compra en Línea
+INICIO: Cliente visita el sitio web
 
-(Browse products)
-- Customer searches and filters items.
+(Navegar productos)
+- Cliente busca y filtra artículos.
 
-(Select an item)
+(Seleccionar un artículo)
 
-<Is product in stock?>
-  [Yes] -> (Add to cart)
-    -> [/View cart and proceed to payment/]
-    -> <Is user registered?>
-      [Yes] -> (Validate session)
-        -> (Confirm order)
-      [No] -> [/Create account or checkout as guest/]
-        -> (Confirm order)
-    -> (Confirm order)
-    -> [[Generate invoice]]
-    -> END: Successful purchase
-  [No] -> (Display 'Out of stock' message)
-    -> (Suggest similar products)
-    -> (Browse products)`,
+<¿Hay producto en stock?>
+  [Sí] -> (Añadir al carrito)
+    -> [/Ver carrito y proceder al pago/]
+    -> <¿Usuario está registrado?>
+      [Sí] -> (Validar sesión)
+        -> (Confirmar pedido)
+      [No] -> [/Crear cuenta o pagar como invitado/]
+        -> (Confirmar pedido)
+    -> (Confirmar pedido)
+    -> [[Generar factura]]
+    -> FIN: Compra exitosa
+  [No] -> (Mostrar mensaje 'Agotado')
+    -> (Sugerir productos similares)
+    -> (Navegar productos)`,
   },
   {
     id: "login-flow",
-    name: "Login Flow",
-    content: `// User Authentication
-START: User navigates to login page
+    name: "Flujo de Inicio de Sesión",
+    content: `// Autenticación de Usuario
+INICIO: Usuario navega a la página de inicio de sesión
 
-[/User enters credentials (email, password)/]
+[/Usuario ingresa credenciales (email, contraseña)/]
 
-(Submit form)
+(Enviar formulario)
 
-<Are credentials valid?>
-  [Yes] -> (Create session token)
-    -> (Redirect to dashboard)
-    -> END: Login successful
-  [No] -> (Display error message)
-    -> [/User enters credentials (email, password)/]`,
+<¿Credenciales son válidas?>
+  [Sí] -> (Crear token de sesión)
+    -> (Redirigir al panel de control)
+    -> FIN: Inicio de sesión exitoso
+  [No] -> (Mostrar mensaje de error)
+    -> [/Usuario ingresa credenciales (email, contraseña)/]`,
   },
   {
     id: "error-handling",
-    name: "Error Handling",
-    content: `// API Request Error Handling
-START: Make API request
+    name: "Manejo de Errores",
+    content: `// Manejo de Errores en Petición de API
+INICIO: Realizar petición a la API
 
-(Request sent to server)
+(Petición enviada al servidor)
 
-<Did request succeed?>
-  [Yes] -> (Process response data)
-    -> END: Process complete
-  [No] -> <Is it a network error?>
-    [Yes] -> (Retry request after 5 seconds)
-      -> START
-    [No] -> (Log error to monitoring service)
-      -> (Display generic error message to user)
-      -> END: Process failed`,
+<¿Petición fue exitosa?>
+  [Sí] -> (Procesar datos de respuesta)
+    -> FIN: Proceso completo
+  [No] -> <¿Es un error de red?>
+    [Sí] -> (Reintentar petición después de 5 segundos)
+      -> INICIO
+    [No] -> (Registrar error en servicio de monitoreo)
+      -> (Mostrar mensaje de error genérico al usuario)
+      -> FIN: Proceso fallido`,
   },
 ];

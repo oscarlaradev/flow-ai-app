@@ -92,7 +92,7 @@ const DiagramPanel = ({ svgContent, isLoading, error }: DiagramPanelProps) => {
         <div className="m-auto flex flex-col items-center gap-4 text-destructive">
           <AlertTriangle className="h-12 w-12" />
           <p className="max-w-md text-center font-semibold">
-            Could not generate flowchart.
+            No se pudo generar el diagrama.
           </p>
           <p className="max-w-md text-center text-sm text-muted-foreground">
             {error}
@@ -112,7 +112,7 @@ const DiagramPanel = ({ svgContent, isLoading, error }: DiagramPanelProps) => {
     return (
       <div className="m-auto flex flex-col items-center gap-4 text-muted-foreground">
         <GalleryVerticalEnd className="h-12 w-12" />
-        <p>Your interactive diagram will appear here</p>
+        <p>Tu diagrama interactivo aparecerá aquí</p>
       </div>
     );
   };
@@ -120,7 +120,7 @@ const DiagramPanel = ({ svgContent, isLoading, error }: DiagramPanelProps) => {
   return (
     <Card className="flex flex-1 flex-col overflow-hidden">
       <CardHeader>
-        <CardTitle className="text-accent">Interactive Visualizer</CardTitle>
+        <CardTitle className="text-primary">Visualizador Interactivo</CardTitle>
       </CardHeader>
       <CardContent className="flex-1 p-2 pt-0 sm:p-4">
         <div

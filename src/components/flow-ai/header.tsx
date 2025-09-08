@@ -20,21 +20,21 @@ interface HeaderProps {
 const Header = ({ onGenerate, onExampleChange, isLoading }: HeaderProps) => {
   const handleExport = () => {
     // Placeholder for export functionality
-    alert("Export functionality is not yet implemented.");
+    alert("La función de exportar aún no está implementada.");
   };
 
   return (
     <header className="flex flex-col items-center justify-between gap-4 rounded-lg border bg-card p-4 sm:flex-row">
       <div className="flex items-center gap-3 self-start">
-        <Eye className="h-7 w-7 text-accent" />
+        <Eye className="h-7 w-7 text-primary" />
         <h1 className="text-2xl font-bold tracking-tight">
-          Flow<span className="text-accent">AI</span>
+          Flow<span className="text-primary">AI</span>
         </h1>
       </div>
       <div className="flex w-full flex-col items-stretch gap-2 sm:w-auto sm:flex-row sm:items-center">
         <Select onValueChange={onExampleChange} defaultValue={EXAMPLE_FLOWS[0].id}>
           <SelectTrigger className="w-full sm:w-[180px]">
-            <SelectValue placeholder="Load Example" />
+            <SelectValue placeholder="Cargar Ejemplo" />
           </SelectTrigger>
           <SelectContent>
             {EXAMPLE_FLOWS.map((example) => (
@@ -48,18 +48,18 @@ const Header = ({ onGenerate, onExampleChange, isLoading }: HeaderProps) => {
           <Button
             onClick={onGenerate}
             disabled={isLoading}
-            className="flex-1 bg-accent hover:bg-primary"
+            className="flex-1"
           >
             {isLoading ? (
               <Loader2 className="animate-spin" />
             ) : (
               <Sparkles />
             )}
-            <span>Generate</span>
+            <span>Generar</span>
           </Button>
           <Button variant="outline" onClick={handleExport} className="flex-1">
             <Download />
-            <span>Export</span>
+            <span>Exportar</span>
           </Button>
         </div>
       </div>

@@ -1,11 +1,11 @@
 'use server';
 
 /**
- * @fileOverview An AI agent that provides syntax suggestions for describing flowcharts in simple text.
+ * @fileOverview Un agente de IA que proporciona sugerencias de sintaxis para describir diagramas de flujo en texto simple.
  *
- * - getSyntaxSuggestion - A function that provides syntax suggestions for describing flowcharts.
- * - SyntaxSuggestionInput - The input type for the getSyntaxSuggestion function.
- * - SyntaxSuggestionOutput - The return type for the getSyntaxSuggestion function.
+ * - getSyntaxSuggestion - Una función que proporciona sugerencias de sintaxis para describir diagramas de flujo.
+ * - SyntaxSuggestionInput - El tipo de entrada para la función getSyntaxSuggestion.
+ * - SyntaxSuggestionOutput - El tipo de retorno para la función getSyntaxSuggestion.
  */
 
 import {ai} from '@/ai/genkit';
@@ -14,14 +14,14 @@ import {z} from 'genkit';
 const SyntaxSuggestionInputSchema = z.object({
   inputText: z
     .string()
-    .describe('The current text input describing the flowchart.'),
+    .describe('El texto de entrada actual que describe el diagrama de flujo.'),
 });
 export type SyntaxSuggestionInput = z.infer<typeof SyntaxSuggestionInputSchema>;
 
 const SyntaxSuggestionOutputSchema = z.object({
   suggestion: z
     .string()
-    .describe('The AI syntax suggestion to improve the input text.'),
+    .describe('La sugerencia de sintaxis de la IA para mejorar el texto de entrada.'),
 });
 export type SyntaxSuggestionOutput = z.infer<typeof SyntaxSuggestionOutputSchema>;
 
@@ -33,14 +33,14 @@ const prompt = ai.definePrompt({
   name: 'syntaxSuggestionPrompt',
   input: {schema: SyntaxSuggestionInputSchema},
   output: {schema: SyntaxSuggestionOutputSchema},
-  prompt: `You are an AI assistant that provides helpful syntax suggestions for describing flowcharts using a simple text-based language.
+  prompt: `Eres un asistente de IA que proporciona sugerencias útiles de sintaxis para describir diagramas de flujo utilizando un lenguaje simple basado en texto.
 
-  Given the following input text, suggest how the user can improve the syntax to better describe the flowchart. Focus on providing specific and actionable suggestions.
+  Dado el siguiente texto de entrada, sugiere cómo el usuario puede mejorar la sintaxis para describir mejor el diagrama de flujo. Concéntrate en proporcionar sugerencias específicas y accionables.
 
-  Input Text:
+  Texto de Entrada:
   {{inputText}}
 
-  Suggestion:`,
+  Sugerencia:`,
 });
 
 const syntaxSuggestionFlow = ai.defineFlow(

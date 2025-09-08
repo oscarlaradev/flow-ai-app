@@ -27,12 +27,12 @@ const SyntaxGuide = () => {
 
   return (
     <ul className="space-y-3 text-sm text-foreground">
-      <SyntaxItem title="Process" code="(Action)" />
-      <SyntaxItem title="Decision" code="<Question>" />
-      <SyntaxItem title="Connection" code="-> [Label] (Node)" />
-      <SyntaxItem title="I/O" code="[/Data/]" />
-      <SyntaxItem title="Document" code="[[Report]]" />
-      <SyntaxItem title="Comment" code="// This is ignored" />
+      <SyntaxItem title="Proceso" code="(Acción)" />
+      <SyntaxItem title="Decisión" code="<Pregunta>" />
+      <SyntaxItem title="Conexión" code="-> [Etiqueta] (Nodo)" />
+      <SyntaxItem title="Entrada/Salida" code="[/Datos/]" />
+      <SyntaxItem title="Documento" code="[[Reporte]]" />
+      <SyntaxItem title="Comentario" code="// Esto se ignora" />
     </ul>
   );
 };

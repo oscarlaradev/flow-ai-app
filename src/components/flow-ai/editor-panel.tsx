@@ -34,7 +34,7 @@ const EditorPanel = ({ text, onTextChange }: EditorPanelProps) => {
           });
           setSuggestion(result.suggestion);
         } catch (error) {
-          console.error("Failed to get suggestion:", error);
+          console.error("No se pudo obtener la sugerencia:", error);
           setSuggestion("");
         } finally {
           setIsSuggesting(false);
@@ -50,14 +50,14 @@ const EditorPanel = ({ text, onTextChange }: EditorPanelProps) => {
   return (
     <Card className="flex w-full flex-col lg:max-w-md xl:max-w-lg">
       <CardHeader>
-        <CardTitle className="text-accent">Editor & Guide</CardTitle>
+        <CardTitle className="text-primary">Editor y Guía</CardTitle>
       </CardHeader>
       <CardContent className="flex flex-1 flex-col gap-4 overflow-hidden pt-0">
         <div className="relative flex-1">
           <Textarea
             value={text}
             onChange={(e) => onTextChange(e.target.value)}
-            placeholder="Describe your flowchart here..."
+            placeholder="Describe tu diagrama de flujo aquí..."
             className="h-full w-full resize-none text-base"
           />
         </div>
@@ -69,7 +69,7 @@ const EditorPanel = ({ text, onTextChange }: EditorPanelProps) => {
               ) : (
                 <Lightbulb className="h-4 w-4 text-yellow-400" />
               )}
-              AI Suggestion
+              Sugerencia de IA
             </div>
             {suggestion && !isSuggesting && (
               <p className="mt-2 text-muted-foreground">{suggestion}</p>
@@ -79,7 +79,7 @@ const EditorPanel = ({ text, onTextChange }: EditorPanelProps) => {
         <Accordion type="single" collapsible>
           <AccordionItem value="syntax-guide">
             <AccordionTrigger className="text-sm font-semibold">
-              View Syntax Guide
+              Ver Guía de Sintaxis
             </AccordionTrigger>
             <AccordionContent>
               <SyntaxGuide />

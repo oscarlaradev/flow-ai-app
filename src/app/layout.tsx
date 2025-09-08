@@ -15,8 +15,8 @@ const fontSourceCodePro = Source_Code_Pro({
 });
 
 export const metadata: Metadata = {
-  title: 'FlowAI',
-  description: 'Generate flowcharts from text descriptions with AI.',
+  title: 'FlowAI - Creador de Diagramas',
+  description: 'Genera diagramas de flujo a partir de texto con IA.',
 };
 
 export default function RootLayout({
@@ -25,7 +25,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="dark" suppressHydrationWarning>
+    <html lang="es" className="dark" suppressHydrationWarning>
       <body
         className={cn(
           'font-sans antialiased',

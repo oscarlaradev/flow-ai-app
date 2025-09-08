@@ -1,11 +1,11 @@
 'use server';
 
 /**
- * @fileOverview A flowchart generation AI agent.
+ * @fileOverview Un agente de IA para la generación de diagramas de flujo.
  *
- * - textToFlowchart - A function that generates a flowchart from a text description.
- * - TextToFlowchartInput - The input type for the textToFlowchart function.
- * - TextToFlowchartOutput - The return type for the textToFlowchart function.
+ * - textToFlowchart - Una función que genera un diagrama de flujo a partir de una descripción de texto.
+ * - TextToFlowchartInput - El tipo de entrada para la función textToFlowchart.
+ * - TextToFlowchartOutput - El tipo de retorno para la función textToFlowchart.
  */
 
 import {ai} from '@/ai/genkit';
@@ -14,14 +14,14 @@ import {z} from 'genkit';
 const TextToFlowchartInputSchema = z.object({
   textDescription: z
     .string()
-    .describe('A text description of the flowchart to generate.'),
+    .describe('Una descripción en texto del diagrama de flujo a generar.'),
 });
 export type TextToFlowchartInput = z.infer<typeof TextToFlowchartInputSchema>;
 
 const TextToFlowchartOutputSchema = z.object({
   flowchartDiagram: z
     .string()
-    .describe('The generated flowchart diagram in SVG format.'),
+    .describe('El diagrama de flujo generado en formato SVG.'),
 });
 export type TextToFlowchartOutput = z.infer<typeof TextToFlowchartOutputSchema>;
 
@@ -33,18 +33,18 @@ const prompt = ai.definePrompt({
   name: 'textToFlowchartPrompt',
   input: {schema: TextToFlowchartInputSchema},
   output: {schema: TextToFlowchartOutputSchema},
-  prompt: `You are an expert in generating flowcharts from text descriptions.
+  prompt: `Eres un experto en generar diagramas de flujo a partir de descripciones de texto.
 
-  Given the following text description of a flowchart, generate a flowchart diagram in SVG format.
+  Dada la siguiente descripción de texto de un diagrama de flujo, genera un diagrama de flujo en formato SVG.
 
-  Text Description:
+  Descripción de Texto:
   {{textDescription}}
 
-  The SVG should be well-formatted and visually appealing.
-  Make sure to include nodes, connectors, and labels for each element in the flowchart.
-  Each of the nodes should be positioned in a way that the flowchart can be visualized in a clear and understandable manner.
-  Ensure that the output is a valid SVG.
-  `, // Make sure this is a valid prompt for generating SVG
+  El SVG debe estar bien formateado y ser visualmente atractivo.
+  Asegúrate de incluir nodos, conectores y etiquetas para cada elemento en el diagrama de flujo.
+  Cada uno de los nodos debe posicionarse de manera que el diagrama de flujo se pueda visualizar de forma clara y comprensible.
+  Asegúrate de que la salida sea un SVG válido.
+  `, 
 });
 
 const textToFlowchartFlow = ai.defineFlow(

@@ -21,7 +21,7 @@ const Home: FC = () => {
       toast({
         variant: "destructive",
         title: "Error",
-        description: "Input text cannot be empty.",
+        description: "El campo de texto no puede estar vacío.",
       });
       return;
     }
@@ -34,14 +34,14 @@ const Home: FC = () => {
       if (result.flowchartDiagram) {
         setSvgContent(result.flowchartDiagram);
       } else {
-        throw new Error("The AI did not return a valid flowchart.");
+        throw new Error("La IA no devolvió un diagrama de flujo válido.");
       }
     } catch (e: unknown) {
       const errorMessage = e instanceof Error ? e.message : String(e);
       setError(errorMessage);
       toast({
         variant: "destructive",
-        title: "Failed to generate flowchart",
+        title: "Error al generar el diagrama",
         description: errorMessage,
       });
     } finally {
