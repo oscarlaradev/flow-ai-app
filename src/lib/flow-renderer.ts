@@ -14,13 +14,13 @@ function createSVGElement(tag: string, attributes: { [key: string]: string | num
 function createText(node: dagre.Node, isDarkMode: boolean): string {
   const textColor = isDarkMode ? 'hsl(210 40% 98%)' : 'hsl(222.2 47.4% 11.2%)';
   const words = node.label.split(' ');
-  let lines: string[] = [];
+  const lines: string[] = [];
   let currentLine = '';
+  const maxCharsPerLine = 18; // Aproximación
 
   words.forEach(word => {
     const testLine = currentLine ? `${currentLine} ${word}` : word;
-    // This is a rough approximation. A proper implementation would measure text width.
-    if (testLine.length > 18) {
+    if (testLine.length > maxCharsPerLine && currentLine) {
       lines.push(currentLine);
       currentLine = word;
     } else {
@@ -29,13 +29,15 @@ function createText(node: dagre.Node, isDarkMode: boolean): string {
   });
   lines.push(currentLine);
 
+  const lineHeight = 1.2; // em
+  const startYOffset = -(lines.length - 1) / 2 * lineHeight;
+
   const tspanLines = lines.map((line, index) => {
-    const dy = index === 0 ? -(lines.length - 1) * 0.6 + 'em' : '1.2em';
-    return `<tspan x="0" dy="${dy}">${line}</tspan>`;
+    const dy = index === 0 ? `${startYOffset}em` : `${lineHeight}em`;
+    return `<tspan x="${node.x}" dy="${dy}">${line}</tspan>`;
   }).join('');
 
   return `<text
-    x="${node.x}"
     y="${node.y}"
     fill="${textColor}"
     font-family="sans-serif"
@@ -44,7 +46,6 @@ function createText(node: dagre.Node, isDarkMode: boolean): string {
     dominant-baseline="central"
   >${tspanLines}</text>`;
 }
-
 
 function createNode(node: dagre.Node, nodeInfo: FlowchartNode, isDarkMode: boolean): string {
   const x = node.x - node.width / 2;
@@ -121,16 +122,19 @@ function createEdge(edge: dagre.Edge, isDarkMode: boolean): string {
       fill="${labelColor}"
       font-size="12px"
       text-anchor="middle"
+      dominant-baseline="middle"
+      dy="-5"
+      style="background-color: hsl(var(--background));"
     >${edge.label}</text>`;
   }
 
-  return pathElement + labelElement;
+  return labelElement + pathElement;
 }
 
 
 export function generateSvgFromFlowData(flowData: TextToFlowchartOutput, isDarkMode = true): string {
   const g = new dagre.graphlib.Graph();
-  g.setGraph({ rankdir: 'TB', marginx: NODE_PADDING, marginy: NODE_PADDING });
+  g.setGraph({ rankdir: 'TB', marginx: NODE_PADDING, marginy: NODE_PADDING, nodesep: 50, ranksep: 50 });
   g.setDefaultEdgeLabel(() => ({}));
 
   flowData.nodes.forEach(node => {
@@ -160,6 +164,7 @@ export function generateSvgFromFlowData(flowData: TextToFlowchartOutput, isDarkM
   const graphHeight = g.graph().height ?? 600;
 
   const arrowHeadColor = isDarkMode ? 'hsl(210 40% 98%)' : 'hsl(222.2 47.4% 11.2%)';
+  const backgroundColor = isDarkMode ? 'hsl(222.2 84% 4.9%)' : 'hsl(0 0% 100%)';
 
   return `
     <svg width="${graphWidth}" height="${graphHeight}" viewBox="0 0 ${graphWidth} ${graphHeight}">
@@ -176,8 +181,8 @@ export function generateSvgFromFlowData(flowData: TextToFlowchartOutput, isDarkM
         </marker>
       </defs>
       <g>
-        ${edges.join('')}
         ${nodes.map(n => n.node).join('')}
+        ${edges.join('')}
         ${nodes.map(n => n.text).join('')}
       </g>
     </svg>
