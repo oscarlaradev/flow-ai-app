@@ -4,48 +4,22 @@
  * @fileOverview Un agente de IA que convierte descripciones de texto de diagramas de flujo en una estructura de datos JSON.
  *
  * - textToFlowchart - Una función que convierte la descripción textual de un diagrama de flujo en una estructura JSON.
- * - TextToFlowchartInput - El tipo de entrada para la función textToFlowchart.
- * - FlowchartNode - Representa un nodo en el diagrama de flujo.
- * - FlowchartEdge - Representa una conexión (arista) entre nodos.
- * - TextToFlowchartOutput - El tipo de retorno, que contiene un array de nodos y aristas.
  */
 
 import {ai} from '@/ai/genkit';
-import {z} from 'genkit';
+import {
+  TextToFlowchartInputSchema,
+  TextToFlowchartOutputSchema,
+  type TextToFlowchartInput,
+  type TextToFlowchartOutput,
+} from '@/ai/types/flowchart';
 
-const TextToFlowchartInputSchema = z.object({
-  textDescription: z
-    .string()
-    .describe('Una descripción en texto del diagrama de flujo a generar.'),
-});
-export type TextToFlowchartInput = z.infer<typeof TextToFlowchartInputSchema>;
-
-export const FlowchartNodeSchema = z.object({
-  id: z.string().describe('Identificador único para el nodo.'),
-  label: z.string().describe('El texto que se mostrará dentro del nodo.'),
-  type: z
-    .enum(['process', 'decision', 'start/end'])
-    .describe('El tipo de nodo.'),
-});
-
-export const FlowchartEdgeSchema = z.object({
-  from: z.string().describe('El ID del nodo de origen.'),
-  to: z.string().describe('El ID del nodo de destino.'),
-  label: z.string().optional().describe('Etiqueta opcional para la conexión.'),
-});
-
-const TextToFlowchartOutputSchema = z.object({
-  nodes: z
-    .array(FlowchartNodeSchema)
-    .describe('Una lista de todos los nodos en el diagrama.'),
-  edges: z
-    .array(FlowchartEdgeSchema)
-    .describe('Una lista de todas las conexiones (aristas) entre nodos.'),
-});
-
-export type FlowchartNode = z.infer<typeof FlowchartNodeSchema>;
-export type FlowchartEdge = z.infer<typeof FlowchartEdgeSchema>;
-export type TextToFlowchartOutput = z.infer<typeof TextToFlowchartOutputSchema>;
+export type {
+  TextToFlowchartInput,
+  TextToFlowchartOutput,
+  FlowchartNode,
+  FlowchartEdge,
+} from '@/ai/types/flowchart';
 
 export async function textToFlowchart(
   input: TextToFlowchartInput

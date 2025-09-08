@@ -1,6 +1,6 @@
 import dagre from 'dagre';
 import { line, curveBasis } from 'd3-shape';
-import type { TextToFlowchartOutput, FlowchartNode, FlowchartEdge } from '@/ai/flows/text-to-flowchart';
+import type { TextToFlowchartOutput, FlowchartNode } from '@/ai/types/flowchart';
 
 const NODE_WIDTH = 160;
 const NODE_HEIGHT = 80;
