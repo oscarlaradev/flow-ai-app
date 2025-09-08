@@ -2,7 +2,6 @@ import type { Metadata } from 'next';
 import { Inter, Source_Code_Pro } from 'next/font/google';
 import './globals.css';
 import { Toaster } from '@/components/ui/toaster';
-import { cn } from '@/lib/utils';
 
 const fontInter = Inter({
   subsets: ['latin'],
@@ -30,9 +29,7 @@ export default function RootLayout({
       className={`${fontInter.variable} ${fontSourceCodePro.variable} dark`}
       suppressHydrationWarning
     >
-      <body
-        className={'font-sans antialiased'}
-      >
+      <body className="font-sans antialiased">
         {children}
         <Toaster />
       </body>
