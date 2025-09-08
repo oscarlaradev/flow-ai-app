@@ -85,12 +85,12 @@ const Home: FC = () => {
 
     const triggerDownload = (href: string, filename: string) => {
       const a = document.createElement('a');
-      a.href = href;
-      a.download = filename;
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      URL.revokeObjectURL(href);
+a.href = href;
+a.download = filename;
+document.body.appendChild(a);
+a.click();
+document.body.removeChild(a);
+URL.revokeObjectURL(href);
     };
 
     if (format === 'svg') {
@@ -118,12 +118,11 @@ const Home: FC = () => {
                 throw new Error("No se pudo obtener el contexto del canvas.");
             }
 
-            // Usar una copia del SVG para no modificar el original
-            const svgClone = svgElement.cloneNode(true) as SVGSVGElement;
-            // Asegurar un fondo blanco para el PNG
-            svgClone.style.backgroundColor = 'white';
+            // Dibuja un fondo blanco en el canvas
+            ctx.fillStyle = 'white';
+            ctx.fillRect(0, 0, width, height);
 
-            const v = await Canvg.from(ctx, svgClone.outerHTML);
+            const v = await Canvg.from(ctx, svgElement.outerHTML);
             await v.render();
             
             const blob = await canvas.convertToBlob({ type: 'image/png' });
