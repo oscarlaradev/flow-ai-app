@@ -71,12 +71,39 @@ const Home: FC = () => {
     setText(EXAMPLE_FLOW.content);
     setFlowData(null);
   };
+  
+  const handleExport = () => {
+    if (!svgContent) {
+      toast({
+        variant: 'destructive',
+        title: 'No hay diagrama para exportar',
+        description: 'Primero genera un diagrama antes de intentar exportarlo.',
+      });
+      return;
+    }
+
+    const blob = new Blob([svgContent], { type: 'image/svg+xml' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'diagrama.svg';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+
+     toast({
+      title: 'Exportación exitosa',
+      description: 'Tu diagrama se ha descargado como "diagrama.svg".',
+    });
+  };
 
   return (
     <div className="flex min-h-screen w-full flex-col bg-background p-4 overflow-auto">
       <Header
         onGenerate={handleGenerate}
         onExampleChange={handleExampleChange}
+        onExport={handleExport}
         isLoading={isLoading}
       />
       <main className="flex min-h-0 flex-1 flex-col gap-4 lg:flex-row">

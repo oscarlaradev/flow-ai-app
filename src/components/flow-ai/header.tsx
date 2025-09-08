@@ -6,14 +6,11 @@ import { Eye, Sparkles, Download, Loader2, RefreshCw } from "lucide-react";
 interface HeaderProps {
   onGenerate: () => void;
   onExampleChange: () => void;
+  onExport: () => void;
   isLoading: boolean;
 }
 
-const Header = ({ onGenerate, onExampleChange, isLoading }: HeaderProps) => {
-  const handleExport = () => {
-    // Placeholder for export functionality
-    alert("La función de exportar aún no está implementada.");
-  };
+const Header = ({ onGenerate, onExampleChange, onExport, isLoading }: HeaderProps) => {
 
   return (
     <header className="flex flex-col items-center justify-between gap-4 rounded-lg border bg-card p-4 sm:flex-row">
@@ -45,7 +42,7 @@ const Header = ({ onGenerate, onExampleChange, isLoading }: HeaderProps) => {
             )}
             <span>Generar</span>
           </Button>
-          <Button variant="outline" onClick={handleExport} className="flex-1">
+          <Button variant="outline" onClick={onExport} className="flex-1">
             <Download />
             <span>Exportar</span>
           </Button>
