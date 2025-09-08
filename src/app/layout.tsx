@@ -27,17 +27,11 @@ export default function RootLayout({
   return (
     <html
       lang="es"
-      className={cn(
-        'dark',
-        fontInter.variable,
-        fontSourceCodePro.variable
-      )}
+      className={`${fontInter.variable} ${fontSourceCodePro.variable} dark`}
       suppressHydrationWarning
     >
       <body
-        className={cn(
-          'font-sans antialiased'
-        )}
+        className={'font-sans antialiased'}
       >
         {children}
         <Toaster />
