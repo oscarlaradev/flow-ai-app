@@ -1,20 +1,24 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import type { FC } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { textToFlowchart } from "@/ai/flows/text-to-flowchart";
 import Header from "@/components/flow-ai/header";
 import EditorPanel from "@/components/flow-ai/editor-panel";
 import DiagramPanel from "@/components/flow-ai/diagram-panel";
-import { EXAMPLE_FLOWS } from "@/lib/constants";
+import { EXAMPLE_FLOW } from "@/lib/constants";
 
 const Home: FC = () => {
-  const [text, setText] = useState<string>(EXAMPLE_FLOWS[0].content);
+  const [text, setText] = useState<string>("");
   const [svgContent, setSvgContent] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>("");
   const { toast } = useToast();
+
+  useEffect(() => {
+    setText(EXAMPLE_FLOW.content);
+  }, []);
 
   const handleGenerate = async () => {
     if (!text.trim()) {
@@ -42,22 +46,19 @@ const Home: FC = () => {
       toast({
         variant: "destructive",
         title: "Error al generar el diagrama",
-        description: "La IA no pudo procesar la descripción. Intenta simplificar el texto.",
+        description: "La IA no pudo procesar la descripción. Intenta simplificar el texto o revisar la sintaxis.",
       });
     } finally {
       setIsLoading(false);
     }
   };
 
-  const handleExampleChange = (value: string) => {
-    const example = EXAMPLE_FLOWS.find((ex) => ex.id === value);
-    if (example) {
-      setText(example.content);
-    }
+  const handleExampleChange = () => {
+    setText(EXAMPLE_FLOW.content);
   };
 
   return (
-    <div className="flex min-h-screen w-full flex-col bg-background p-4">
+    <div className="flex min-h-screen w-full flex-col bg-background p-4 overflow-auto">
       <Header
         onGenerate={handleGenerate}
         onExampleChange={handleExampleChange}

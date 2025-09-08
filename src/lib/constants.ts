@@ -1,49 +1,13 @@
-export const EXAMPLE_FLOWS = [
-  {
-    id: 'algoritmo-simple',
-    name: 'Algoritmo Simple',
-    content: `// Algoritmo para hacer café
+export const EXAMPLE_FLOW = {
+  id: 'ejemplo-general',
+  name: 'Ejemplo General',
+  content: `// Proceso de decisión para salir
 ((Inicio))
--> (Hervir agua)
--> (Poner café en una taza)
--> (Verter agua caliente)
--> <¿Añadir azúcar?>
-  -[Sí]-> (Añadir azúcar)
-  -[No]-> (Remover)
--> (Remover)
+-> (Revisar el clima)
+-> <¿Está lloviendo?>
+  -[Sí]-> (Coger un paraguas)
+  -[No]-> (Dejar el paraguas)
+-> (Salir de casa)
 -> ((Fin))
 `,
-  },
-  {
-    id: 'proceso-desarrollo',
-    name: 'Proceso de Desarrollo',
-    content: `// Flujo de desarrollo de una nueva función
-((Inicio))
--> (Analizar requisitos)
--> (Diseñar la solución)
--> (Escribir el código)
--> <¿Pasa las pruebas?>
-  -[No]-> (Corregir errores)
-  -[Sí]-> (Hacer 'commit' de los cambios)
--> (Hacer 'commit' de los cambios)
--> (Desplegar a producción)
--> ((Fin))
-`,
-  },
-  {
-    id: 'resolucion-problemas',
-    name: 'Resolución de Problemas',
-    content: `// Proceso para solucionar un bug
-((Inicio))
--> (Identificar el bug)
--> (Reproducir el bug)
--> <¿Es reproducible?>
-  -[No]-> (Añadir más 'logs') -> (Identificar el bug)
-  -[Sí]-> (Buscar la causa raíz)
--> (Buscar la causa raíz)
--> (Implementar una solución)
--> (Probar la solución)
--> ((Fin))
-`,
-  },
-];
+};

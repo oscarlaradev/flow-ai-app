@@ -33,40 +33,37 @@ const prompt = ai.definePrompt({
   name: 'textToFlowchartPrompt',
   input: {schema: TextToFlowchartInputSchema},
   output: {schema: TextToFlowchartOutputSchema},
-  prompt: `Eres un experto en generar diagramas de flujo en formato SVG a partir de descripciones de texto. Tu tarea es convertir la descripción proporcionada en un diagrama SVG limpio, válido y visualmente atractivo.
+  prompt: `Eres un experto en generar diagramas de flujo en formato SVG a partir de una sintaxis de texto específica. Tu tarea es convertir la descripción proporcionada en un diagrama SVG limpio, válido y visualmente atractivo.
 
-Descripción de Texto:
-{{textDescription}}
+Descripción de Texto a convertir:
+{{{textDescription}}}
 
-DIRECTIVAS PARA LA GENERACIÓN DEL SVG:
-1.  **Salida Obligatoria**: La salida debe ser exclusivamente un código SVG completo y válido. No incluyas comentarios, explicaciones ni ningún otro texto fuera de la etiqueta <svg>.
-2.  **Estilo General**: Utiliza los siguientes estilos como base. Puedes ajustarlos si es necesario para mejorar la legibilidad.
-    *   **Fondo**: No definas un fondo para el SVG, debe ser transparente.
-    *   **Fuente**: Usa la fuente 'sans-serif'.
-    *   **Colores**:
-        *   Nodos (rect, ellipse): \`fill: hsl(var(--secondary)); stroke: hsl(var(--primary)); stroke-width: 2;\`
-        *   Texto: \`fill: hsl(var(--secondary-foreground)); font-size: 14px;\`
-        *   Conectores (path): \`stroke: hsl(var(--accent-foreground)); stroke-width: 2;\`
-        *   Puntas de flecha (marker): \`fill: hsl(var(--accent-foreground));\`
-3.  **Elementos del Diagrama**:
-    *   **Nodos**: Usa etiquetas \`<rect>\` (para procesos), \`<ellipse>\` (para inicio/fin) o \`<path>\` con la forma de diamante (para decisiones).
-        *   Los rectángulos deben tener esquinas redondeadas (\`rx="8"\`).
-    *   **Texto**: Centra el texto dentro de cada nodo usando \`text-anchor="middle"\`. Asegúrate de que el texto se ajuste si es demasiado largo, dividiéndolo en varias líneas con etiquetas \`<tspan>\`.
-    *   **Conectores**: Dibuja las flechas de conexión usando etiquetas \`<path>\`. Deben terminar con una punta de flecha.
-4.  **Estructura y Posicionamiento**:
-    *   Calcula un diseño lógico. Los nodos deben estar distribuidos uniformemente para evitar solapamientos y facilitar la lectura.
-    *   Define un \`viewBox\` adecuado en la etiqueta \`<svg>\` que contenga todo el diagrama con un margen razonable.
-5.  **Punta de Flecha**: Define una punta de flecha estándar dentro de una sección \`<defs>\` y aplícala a los conectores.
+INSTRUCCIONES PARA LA GENERACIÓN DEL SVG:
+1.  **Salida Exclusiva**: Tu única salida debe ser el código SVG. No incluyas comentarios de Markdown, explicaciones, ni ningún texto fuera de la etiqueta <svg>.
+2.  **Estilos CSS**: Utiliza los siguientes estilos. Los colores se basan en variables CSS para que el diagrama se adapte a temas claro/oscuro.
+    *   **SVG Global**: \`font-family: sans-serif;\`
+    *   **Nodos (rect, ellipse, path para diamante)**: \`fill: hsl(var(--secondary)); stroke: hsl(var(--primary)); stroke-width: 2px;\`
+    *   **Texto dentro de Nodos**: \`fill: hsl(var(--secondary-foreground)); font-size: 14px; text-anchor: middle; dominant-baseline: central;\`
+    *   **Líneas de Conexión**: \`stroke: hsl(var(--accent-foreground)); stroke-width: 2px; marker-end: url(#arrowhead);\`
+    *   **Punta de Flecha**: \`fill: hsl(var(--accent-foreground));\`
+    *   **Etiquetas de Conexión**: \`fill: hsl(var(--muted-foreground)); font-size: 12px; text-anchor: middle;\`
+
+3.  **Elementos del Diagrama y Diseño**:
+    *   **Nodos**: Usa \`<rect>\` para procesos (con esquinas redondeadas, \`rx="8"\`), \`<ellipse>\` para inicio/fin, y \`<path>\` con forma de diamante para decisiones.
+    *   **Texto**: El texto dentro de los nodos debe estar centrado. Si es muy largo, divídelo en varias líneas usando \`<tspan>\` con un espaciado adecuado (\`dy="1.2em"\`).
+    *   **Conectores**: Dibuja flechas con \`<path>\`. Asegúrate de que apunten correctamente a los bordes de los nodos.
+    *   **Diseño**: Calcula un diseño lógico y espaciado. Los nodos no deben solaparse. Define un \`viewBox\` en la etiqueta \`<svg>\` que encaje todo el diagrama con un margen de al menos 20px.
+
+4.  **Definición de la Punta de Flecha**: Incluye esta definición estándar dentro de una sección \`<defs>\` en tu SVG:
     \`\`\`xml
     <defs>
-      <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="0" refY="3.5" orient="auto">
+      <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="8" refY="3.5" orient="auto" markerUnits="strokeWidth">
         <polygon points="0 0, 10 3.5, 0 7" />
       </marker>
     </defs>
     \`\`\`
-    Aplica este marcador a tus paths de conexión así: \`marker-end="url(#arrowhead)"\`.
 
-Asegúrate de que el SVG final sea un único bloque de código XML bien formado, comenzando con \`<svg ...>\` y terminando con \`</svg>\`. Tu capacidad para seguir estas reglas es crucial.`,
+Tu objetivo es producir un SVG impecable y funcional basado en el texto del usuario. Analiza la estructura del texto y genera el diagrama correspondiente.`,
 });
 
 const textToFlowchartFlow = ai.defineFlow(

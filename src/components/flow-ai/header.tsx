@@ -1,19 +1,11 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { EXAMPLE_FLOWS } from "@/lib/constants";
-import { Eye, Sparkles, Download, Loader2 } from "lucide-react";
+import { Eye, Sparkles, Download, Loader2, RefreshCw } from "lucide-react";
 
 interface HeaderProps {
   onGenerate: () => void;
-  onExampleChange: (value: string) => void;
+  onExampleChange: () => void;
   isLoading: boolean;
 }
 
@@ -32,18 +24,14 @@ const Header = ({ onGenerate, onExampleChange, isLoading }: HeaderProps) => {
         </h1>
       </div>
       <div className="flex w-full flex-col items-stretch gap-2 sm:w-auto sm:flex-row sm:items-center">
-        <Select onValueChange={onExampleChange} defaultValue={EXAMPLE_FLOWS[0].id}>
-          <SelectTrigger className="w-full sm:w-[180px]">
-            <SelectValue placeholder="Cargar Ejemplo" />
-          </SelectTrigger>
-          <SelectContent>
-            {EXAMPLE_FLOWS.map((example) => (
-              <SelectItem key={example.id} value={example.id}>
-                {example.name}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
+        <Button
+          variant="outline"
+          onClick={onExampleChange}
+          className="w-full sm:w-auto"
+        >
+          <RefreshCw />
+          <span>Cargar Ejemplo</span>
+        </Button>
         <div className="flex items-center gap-2">
           <Button
             onClick={onGenerate}
