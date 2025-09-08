@@ -1,58 +1,50 @@
 const SyntaxGuide = () => {
-  const SyntaxItem = ({
+  const GuideItem = ({
     title,
-    code,
     description,
+    example,
   }: {
     title: string;
-    code: string;
     description: string;
+    example: string;
   }) => (
     <li>
-      <div className="flex items-center justify-between">
-        <strong className="font-semibold text-foreground">{title}</strong>
-        <code className="rounded bg-muted px-2 py-1 font-code text-xs text-muted-foreground">
-          {code}
-        </code>
-      </div>
+      <strong className="font-semibold text-foreground">{title}</strong>
       <p className="text-xs text-muted-foreground">{description}</p>
+      <code className="mt-1 block rounded bg-muted px-2 py-1 font-code text-xs text-muted-foreground">
+        {example}
+      </code>
     </li>
   );
 
   return (
     <div className="rounded-lg border bg-card p-4">
-        <ul className="space-y-4">
-            <SyntaxItem
-                title="Nodo de Proceso"
-                code="(Acción)"
-                description="Representa una acción o un paso."
-            />
-            <SyntaxItem
-                title="Nodo de Decisión"
-                code="<¿Pregunta?>"
-                description="Indica un punto donde el flujo se divide."
-            />
-            <SyntaxItem
-                title="Conexión"
-                code="-> (Nodo)"
-                description="Conecta dos nodos en una dirección."
-            />
-             <SyntaxItem
-                title="Conexión con Etiqueta"
-                code="-[Etiqueta]->"
-                description="Conexión con texto descriptivo."
-            />
-            <SyntaxItem
-                title="Nodo de Inicio/Fin"
-                code="((Texto))"
-                description="Marca el comienzo o el final del flujo."
-            />
-             <SyntaxItem
-                title="Comentarios"
-                code="// comentario"
-                description="Texto que será ignorado por el generador."
-            />
-        </ul>
+      <p className="mb-4 text-sm text-foreground">
+        Describe tu diagrama de flujo con lenguaje natural. La IA interpretará tus
+        instrucciones. Sé claro y directo.
+      </p>
+      <ul className="space-y-4">
+        <GuideItem
+          title="Describe el Inicio y Fin"
+          description="Menciona explícitamente cuándo comienza y termina el proceso."
+          example="El proceso inicia... y al final termina."
+        />
+        <GuideItem
+          title="Define los Pasos o Acciones"
+          description="Enumera las acciones secuencialmente."
+          example="Primero, se recolectan los datos. Luego, se analizan."
+        />
+        <GuideItem
+          title="Plantea las Decisiones"
+          description="Usa 'si...' para indicar una bifurcación en el flujo. Especifica qué sucede en cada caso."
+          example="Se comprueba si el usuario está registrado. Si es así, accede. Si no, va a la página de registro."
+        />
+        <GuideItem
+          title="Indica las Conexiones"
+          description="Describe cómo se conectan los pasos entre sí, especialmente después de una decisión."
+          example="Después de registrarse, el usuario accede. Ambos caminos llevan al panel principal."
+        />
+      </ul>
     </div>
   );
 };
