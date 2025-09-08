@@ -2,16 +2,26 @@
 
 import { Button } from "@/components/ui/button";
 import { Eye, Sparkles, Download, Loader2, RefreshCw } from "lucide-react";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 interface HeaderProps {
   onGenerate: () => void;
   onExampleChange: () => void;
-  onExport: () => void;
+  onExport: (format: "svg" | "png") => void;
   isLoading: boolean;
 }
 
-const Header = ({ onGenerate, onExampleChange, onExport, isLoading }: HeaderProps) => {
-
+const Header = ({
+  onGenerate,
+  onExampleChange,
+  onExport,
+  isLoading,
+}: HeaderProps) => {
   return (
     <header className="flex flex-col items-center justify-between gap-4 rounded-lg border bg-card p-4 sm:flex-row">
       <div className="flex items-center gap-3 self-start">
@@ -30,22 +40,26 @@ const Header = ({ onGenerate, onExampleChange, onExport, isLoading }: HeaderProp
           <span>Cargar Ejemplo</span>
         </Button>
         <div className="flex items-center gap-2">
-          <Button
-            onClick={onGenerate}
-            disabled={isLoading}
-            className="flex-1"
-          >
-            {isLoading ? (
-              <Loader2 className="animate-spin" />
-            ) : (
-              <Sparkles />
-            )}
+          <Button onClick={onGenerate} disabled={isLoading} className="flex-1">
+            {isLoading ? <Loader2 className="animate-spin" /> : <Sparkles />}
             <span>Generar</span>
           </Button>
-          <Button variant="outline" onClick={onExport} className="flex-1">
-            <Download />
-            <span>Exportar</span>
-          </Button>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="outline" className="flex-1">
+                <Download />
+                <span>Exportar</span>
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent>
+              <DropdownMenuItem onClick={() => onExport("svg")}>
+                Como SVG
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => onExport("png")}>
+                Como PNG
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
       </div>
     </header>
