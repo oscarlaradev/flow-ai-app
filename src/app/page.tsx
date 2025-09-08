@@ -9,6 +9,7 @@ import EditorPanel from "@/components/flow-ai/editor-panel";
 import DiagramPanel from "@/components/flow-ai/diagram-panel";
 import { EXAMPLE_FLOW } from "@/lib/constants";
 import { generateSvgFromFlowData } from "@/lib/flow-renderer";
+import { Canvg } from 'canvg';
 
 
 const Home: FC = () => {
@@ -72,7 +73,7 @@ const Home: FC = () => {
     setFlowData(null);
   };
   
-  const handleExport = (format: 'svg' | 'png') => {
+  const handleExport = async (format: 'svg' | 'png') => {
     if (!svgContent) {
       toast({
         variant: 'destructive',
@@ -82,62 +83,67 @@ const Home: FC = () => {
       return;
     }
 
-    if (format === 'svg') {
-      const blob = new Blob([svgContent], { type: 'image/svg+xml' });
-      const url = URL.createObjectURL(blob);
+    const triggerDownload = (href: string, filename: string) => {
       const a = document.createElement('a');
-      a.href = url;
-      a.download = 'diagrama.svg';
+      a.href = href;
+      a.download = filename;
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
-      URL.revokeObjectURL(url);
+      URL.revokeObjectURL(href);
+    };
+
+    if (format === 'svg') {
+      const blob = new Blob([svgContent], { type: 'image/svg+xml' });
+      const url = URL.createObjectURL(blob);
+      triggerDownload(url, 'diagrama.svg');
       toast({
         title: 'Exportación exitosa',
         description: 'Tu diagrama se ha descargado como "diagrama.svg".',
       });
     } else if (format === 'png') {
-        const svgBlob = new Blob([svgContent], { type: 'image/svg+xml;charset=utf-8' });
-        const svgUrl = URL.createObjectURL(svgBlob);
-        const img = new Image();
-        
-        const svgElement = new DOMParser().parseFromString(svgContent, "image/svg+xml").querySelector("svg");
-        if (!svgElement) return;
-
-        const width = parseInt(svgElement.getAttribute('width') || '800', 10);
-        const height = parseInt(svgElement.getAttribute('height') || '600', 10);
-
-        img.onload = () => {
-            const canvas = document.createElement('canvas');
-            canvas.width = width;
-            canvas.height = height;
-            const ctx = canvas.getContext('2d');
-            if (ctx) {
-                ctx.drawImage(img, 0, 0, width, height);
-                const pngUrl = canvas.toDataURL('image/png');
-                const a = document.createElement('a');
-                a.href = pngUrl;
-                a.download = 'diagrama.png';
-                document.body.appendChild(a);
-                a.click();
-                document.body.removeChild(a);
-                URL.revokeObjectURL(pngUrl);
-                 toast({
-                  title: 'Exportación exitosa',
-                  description: 'Tu diagrama se ha descargado como "diagrama.png".',
-                });
+        try {
+            const svgElement = new DOMParser().parseFromString(svgContent, "image/svg+xml").querySelector("svg");
+            if (!svgElement) {
+                throw new Error("No se pudo parsear el SVG.");
             }
-            URL.revokeObjectURL(svgUrl);
-        };
-        img.onerror = () => {
-             toast({
+
+            const width = parseInt(svgElement.getAttribute('width') || '800', 10);
+            const height = parseInt(svgElement.getAttribute('height') || '600', 10);
+
+            const canvas = new OffscreenCanvas(width, height);
+            const ctx = canvas.getContext('2d');
+            
+            if (!ctx) {
+                throw new Error("No se pudo obtener el contexto del canvas.");
+            }
+
+            // Usar una copia del SVG para no modificar el original
+            const svgClone = svgElement.cloneNode(true) as SVGSVGElement;
+            // Asegurar un fondo blanco para el PNG
+            svgClone.style.backgroundColor = 'white';
+
+            const v = await Canvg.from(ctx, svgClone.outerHTML);
+            await v.render();
+            
+            const blob = await canvas.convertToBlob({ type: 'image/png' });
+            const url = URL.createObjectURL(blob);
+            
+            triggerDownload(url, 'diagrama.png');
+            
+            toast({
+              title: 'Exportación exitosa',
+              description: 'Tu diagrama se ha descargado como "diagrama.png".',
+            });
+        } catch (e) {
+            const errorMessage = e instanceof Error ? e.message : String(e);
+            console.error("Error al exportar PNG:", errorMessage);
+            toast({
                 variant: 'destructive',
                 title: 'Error al exportar PNG',
-                description: 'No se pudo convertir el SVG a PNG.',
+                description: `No se pudo convertir el SVG a PNG. Detalles: ${errorMessage}`,
             });
-            URL.revokeObjectURL(svgUrl);
         }
-        img.src = svgUrl;
     }
   };
 
