@@ -26,9 +26,9 @@ const Header = ({ onGenerate, onExampleChange, isLoading }: HeaderProps) => {
   return (
     <header className="flex flex-col items-center justify-between gap-4 rounded-lg border bg-card p-4 sm:flex-row">
       <div className="flex items-center gap-3 self-start">
-        <Eye className="h-7 w-7 text-primary" />
+        <Eye className="h-7 w-7 text-accent" />
         <h1 className="text-2xl font-bold tracking-tight">
-          Flow<span className="text-primary">AI</span>
+          Flow<span className="text-accent">AI</span>
         </h1>
       </div>
       <div className="flex w-full flex-col items-stretch gap-2 sm:w-auto sm:flex-row sm:items-center">
@@ -48,7 +48,7 @@ const Header = ({ onGenerate, onExampleChange, isLoading }: HeaderProps) => {
           <Button
             onClick={onGenerate}
             disabled={isLoading}
-            className="flex-1 bg-primary hover:bg-accent"
+            className="flex-1 bg-accent hover:bg-primary"
           >
             {isLoading ? (
               <Loader2 className="animate-spin" />

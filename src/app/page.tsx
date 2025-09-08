@@ -57,7 +57,7 @@ const Home: FC = () => {
   };
 
   return (
-    <div className="flex h-screen w-full flex-col gap-4 p-4">
+    <div className="flex h-screen w-full flex-col bg-background p-4">
       <Header
         onGenerate={handleGenerate}
         onExampleChange={handleExampleChange}

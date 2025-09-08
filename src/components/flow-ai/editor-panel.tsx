@@ -50,7 +50,7 @@ const EditorPanel = ({ text, onTextChange }: EditorPanelProps) => {
   return (
     <Card className="flex w-full flex-col lg:max-w-md xl:max-w-lg">
       <CardHeader>
-        <CardTitle className="text-primary">Editor & Guide</CardTitle>
+        <CardTitle className="text-accent">Editor & Guide</CardTitle>
       </CardHeader>
       <CardContent className="flex flex-1 flex-col gap-4 overflow-hidden pt-0">
         <div className="relative flex-1">

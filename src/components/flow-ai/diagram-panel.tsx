@@ -120,7 +120,7 @@ const DiagramPanel = ({ svgContent, isLoading, error }: DiagramPanelProps) => {
   return (
     <Card className="flex flex-1 flex-col overflow-hidden">
       <CardHeader>
-        <CardTitle className="text-primary">Interactive Visualizer</CardTitle>
+        <CardTitle className="text-accent">Interactive Visualizer</CardTitle>
       </CardHeader>
       <CardContent className="flex-1 p-2 pt-0 sm:p-4">
         <div
