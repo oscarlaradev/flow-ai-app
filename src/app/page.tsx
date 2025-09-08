@@ -122,12 +122,12 @@ const Home: FC = () => {
                 a.click();
                 document.body.removeChild(a);
                 URL.revokeObjectURL(pngUrl);
+                 toast({
+                  title: 'Exportación exitosa',
+                  description: 'Tu diagrama se ha descargado como "diagrama.png".',
+                });
             }
             URL.revokeObjectURL(svgUrl);
-            toast({
-              title: 'Exportación exitosa',
-              description: 'Tu diagrama se ha descargado como "diagrama.png".',
-            });
         };
         img.onerror = () => {
              toast({
