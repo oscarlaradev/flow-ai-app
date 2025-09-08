@@ -6,12 +6,12 @@ import { cn } from '@/lib/utils';
 
 const fontInter = Inter({
   subsets: ['latin'],
-  variable: '--font-body',
+  variable: '--font-inter',
 });
 
 const fontSourceCodePro = Source_Code_Pro({
   subsets: ['latin'],
-  variable: '--font-code',
+  variable: '--font-source-code-pro',
 });
 
 export const metadata: Metadata = {
@@ -28,7 +28,7 @@ export default function RootLayout({
     <html lang="en" className="dark" suppressHydrationWarning>
       <body
         className={cn(
-          'font-body antialiased',
+          'font-sans antialiased',
           fontInter.variable,
           fontSourceCodePro.variable
         )}
