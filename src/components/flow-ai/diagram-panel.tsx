@@ -39,7 +39,7 @@ const DiagramPanel = ({ svgContent, isLoading, error }: DiagramPanelProps) => {
   const startPoint = useRef({ x: 0, y: 0 });
 
   const handleMouseDown = (e: MouseEvent<HTMLDivElement>) => {
-    if (e.button !== 0) return;
+    if (e.button !== 0 || !(e.target as HTMLElement).closest('.diagram-bg')) return;
     isPanning.current = true;
     startPoint.current = { x: e.clientX - pan.x, y: e.clientY - pan.y };
     if (containerRef.current) containerRef.current.style.cursor = "grabbing";
@@ -127,16 +127,17 @@ const DiagramPanel = ({ svgContent, isLoading, error }: DiagramPanelProps) => {
           ref={containerRef}
           className={cn(
             "relative h-full w-full overflow-hidden rounded-lg bg-background",
-            "cursor-grab"
           )}
-          onMouseDown={handleMouseDown}
-          onMouseUp={handleMouseUp}
-          onMouseLeave={handleMouseUp}
-          onMouseMove={handleMouseMove}
           onWheel={handleWheel}
         >
           <BackgroundGrid />
-          <div className="relative z-10 h-full w-full">{renderContent()}</div>
+          <div className="diagram-bg absolute inset-0 h-full w-full cursor-grab"
+            onMouseDown={handleMouseDown}
+            onMouseUp={handleMouseUp}
+            onMouseLeave={handleMouseUp}
+            onMouseMove={handleMouseMove}
+          />
+          <div className="relative z-10 h-full w-full pointer-events-none flex items-center justify-center">{renderContent()}</div>
         </div>
       </CardContent>
     </Card>

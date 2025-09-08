@@ -42,7 +42,7 @@ const Home: FC = () => {
       toast({
         variant: "destructive",
         title: "Error al generar el diagrama",
-        description: errorMessage,
+        description: "La IA no pudo procesar la descripción. Intenta simplificar el texto.",
       });
     } finally {
       setIsLoading(false);
@@ -69,7 +69,7 @@ const Home: FC = () => {
           svgContent={svgContent}
           isLoading={isLoading}
           error={error}
-          key={svgContent} // Re-mount component on new SVG to reset pan/zoom
+          key={svgContent} 
         />
       </main>
     </div>
